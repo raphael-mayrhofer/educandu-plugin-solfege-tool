@@ -1,5 +1,5 @@
 {
-  "name": "@educandu/educandu-plugin-solfege-tool",
+  "name": "@raphael-mayrhofer/educandu-plugin-solfege-tool",
   "version": "0.1.0",
   "description": "An interactive solfege tool for Open Music Academy and Educandu",
   "type": "module",
@@ -20,7 +20,9 @@
     "type": "git",
     "url": "https://github.com/raphael-mayrhofer/educandu-plugin-solfege-tool"
   },
-  "dependencies": {},
+  "dependencies": {
+    "abcjs": "6.2.3"
+  },
   "devDependencies": {
     "@ant-design/icons": "5.5.1",
     "@educandu/dev-tools": "^15.1.0",

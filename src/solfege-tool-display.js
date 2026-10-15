@@ -1,32 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'antd';
+import ABCJS from 'abcjs';
 import { useTranslation } from 'react-i18next';
 import { sectionDisplayProps } from '@educandu/educandu/ui/default-prop-types.js';
-
-const ABCJS_URL = 'https://cdn.jsdelivr.net/npm/abcjs@6.2.3/dist/abcjs-basic-min.js';
-
-const loadAbcJs = () => {
-  if (window.ABCJS) {
-    return Promise.resolve(window.ABCJS);
-  }
-
-  const existingScript = document.querySelector(`script[src="${ABCJS_URL}"]`);
-  if (existingScript) {
-    return new Promise((resolve, reject) => {
-      existingScript.addEventListener('load', () => resolve(window.ABCJS), { once: true });
-      existingScript.addEventListener('error', reject, { once: true });
-    });
-  }
-
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = ABCJS_URL;
-    script.async = true;
-    script.addEventListener('load', () => resolve(window.ABCJS), { once: true });
-    script.addEventListener('error', reject, { once: true });
-    document.head.appendChild(script);
-  });
-};
 
 const toAbcAccidentals = melody => melody
   .replace(/([A-Ga-g])##/g, '^^$1')
@@ -52,12 +28,9 @@ export default function SolfegeToolDisplay({ content }) {
   const synthRef = useRef(null);
 
   useEffect(() => {
-    let cancelled = false;
-
-    const render = async () => {
+    const render = () => {
       try {
-        const ABCJS = await loadAbcJs();
-        if (cancelled || !notationRef.current) {
+        if (!notationRef.current) {
           return;
         }
 
@@ -81,9 +54,7 @@ export default function SolfegeToolDisplay({ content }) {
         });
         setError('');
       } catch (renderError) {
-        if (!cancelled) {
-          setError(renderError.message || t('renderError'));
-        }
+        setError(renderError.message || t('renderError'));
       }
     };
 
@@ -94,7 +65,6 @@ export default function SolfegeToolDisplay({ content }) {
     }
 
     return () => {
-      cancelled = true;
       observer.disconnect();
     };
   }, [content, t]);
@@ -108,7 +78,6 @@ export default function SolfegeToolDisplay({ content }) {
     }
 
     try {
-      const ABCJS = await loadAbcJs();
       const visualObjects = ABCJS.renderAbc('*', createAbc(content.melody.replace(/\r?\n/g, ' '), content));
       const synth = new ABCJS.synth.CreateSynth();
       await synth.init({ visualObj: visualObjects[0] });
