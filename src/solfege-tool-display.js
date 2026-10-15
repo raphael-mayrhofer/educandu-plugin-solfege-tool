@@ -1,81 +1,151 @@
-import { Form, Input } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Button } from 'antd';
 import { useTranslation } from 'react-i18next';
-import React, { useEffect, useState } from 'react';
-import Logger from '@educandu/educandu/common/logger.js';
-import Markdown from '@educandu/educandu/components/markdown.js';
-import HttpClient from '@educandu/educandu/api-clients/http-client.js';
-import { handleApiError } from '@educandu/educandu/ui/error-helper.js';
-import { useService } from '@educandu/educandu/components/container-context.js';
-import { useDateFormat } from '@educandu/educandu/components/locale-context.js';
 import { sectionDisplayProps } from '@educandu/educandu/ui/default-prop-types.js';
 
-const POLL_INTERVAL_IN_MS = 5000;
+const ABCJS_URL = 'https://cdn.jsdelivr.net/npm/abcjs@6.2.3/dist/abcjs-basic-min.js';
 
-const logger = new Logger(import.meta.url);
+const loadAbcJs = () => {
+  if (window.ABCJS) {
+    return Promise.resolve(window.ABCJS);
+  }
 
-export default function ServerTimeDisplay({ content, input, canModifyInput, onInputChanged }) {
-  const { formatDate } = useDateFormat();
-  const httpClient = useService(HttpClient);
-  const [serverTime, setServerTime] = useState(null);
+  const existingScript = document.querySelector(`script[src="${ABCJS_URL}"]`);
+  if (existingScript) {
+    return new Promise((resolve, reject) => {
+      existingScript.addEventListener('load', () => resolve(window.ABCJS), { once: true });
+      existingScript.addEventListener('error', reject, { once: true });
+    });
+  }
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = ABCJS_URL;
+    script.async = true;
+    script.addEventListener('load', () => resolve(window.ABCJS), { once: true });
+    script.addEventListener('error', reject, { once: true });
+    document.head.appendChild(script);
+  });
+};
+
+const toAbcAccidentals = melody => melody
+  .replace(/([A-Ga-g])##/g, '^^$1')
+  .replace(/([A-Ga-g])bb/g, '__$1')
+  .replace(/([A-Ga-g])#/g, '^$1')
+  .replace(/([A-Ga-g])b/g, '_$1')
+  .replace(/([A-Ga-g])n/g, '=$1');
+
+const createAbc = (line, content) => [
+  'X:1',
+  `M:${content.meterNumerator}/${content.meterDenominator}`,
+  `L:1/${content.meterDenominator}`,
+  '%%stretchlast true',
+  `K:${content.rootNote}${content.keyQuality === 'minor' ? 'm' : ''}`,
+  toAbcAccidentals(line)
+].join('\n');
+
+export default function SolfegeToolDisplay({ content }) {
   const { t } = useTranslation('raphael-mayrhofer/educandu-plugin-solfege-tool');
-
-  const handleCurrentValueChange = event => {
-    onInputChanged({ value: event.target.value });
-  };
+  const notationRef = useRef(null);
+  const [error, setError] = useState('');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const synthRef = useRef(null);
 
   useEffect(() => {
-    let nextTimeout = null;
+    let cancelled = false;
 
-    const getUpdate = async () => {
+    const render = async () => {
       try {
-        const response = await httpClient.get(
-          '/api/v1/plugin/raphaelMayrhofer/educandu-plugin-solfege-tool/time',
-          { responseType: 'json' }
-        );
+        const ABCJS = await loadAbcJs();
+        if (cancelled || !notationRef.current) {
+          return;
+        }
 
-        setServerTime(response.data.time);
-        nextTimeout = setTimeout(getUpdate, POLL_INTERVAL_IN_MS);
-      } catch (error) {
-        handleApiError({ error, logger, t });
+        notationRef.current.replaceChildren();
+        const lines = content.melody.split(/\r?\n/).filter(line => line.trim());
+
+        lines.forEach(line => {
+          const system = document.createElement('div');
+          system.className = 'EP_RaphaelMayrhofer_SolfegeTool_Display-system';
+          notationRef.current.appendChild(system);
+          ABCJS.renderAbc(system, createAbc(line, content), {
+            responsive: 'resize',
+            // ABCJS uses this snake_case option name in its public API.
+            // eslint-disable-next-line camelcase
+            add_classes: true,
+            paddingtop: 12,
+            paddingbottom: 20,
+            staffwidth: Math.max(240, notationRef.current.clientWidth - 24),
+            wrap: { minSpacing: 2.5, preferredMeasuresPerLine: 4 }
+          });
+        });
+        setError('');
+      } catch (renderError) {
+        if (!cancelled) {
+          setError(renderError.message || t('renderError'));
+        }
       }
     };
 
-    nextTimeout = setTimeout(getUpdate, 0);
+    render();
+    const observer = new ResizeObserver(render);
+    if (notationRef.current) {
+      observer.observe(notationRef.current);
+    }
 
     return () => {
-      if (nextTimeout) {
-        clearTimeout(nextTimeout);
-      }
+      cancelled = true;
+      observer.disconnect();
     };
-  }, [httpClient, t]);
+  }, [content, t]);
+
+  const handlePlayback = async () => {
+    if (synthRef.current) {
+      synthRef.current.stop();
+      synthRef.current = null;
+      setIsPlaying(false);
+      return;
+    }
+
+    try {
+      const ABCJS = await loadAbcJs();
+      const visualObjects = ABCJS.renderAbc('*', createAbc(content.melody.replace(/\r?\n/g, ' '), content));
+      const synth = new ABCJS.synth.CreateSynth();
+      await synth.init({ visualObj: visualObjects[0] });
+      await synth.prime();
+      // eslint-disable-next-line require-atomic-updates
+      synthRef.current = synth;
+      setIsPlaying(true);
+      await synth.start({ qpm: content.tempo });
+      // eslint-disable-next-line require-atomic-updates
+      synthRef.current = null;
+      setIsPlaying(false);
+    } catch (playbackError) {
+      // eslint-disable-next-line require-atomic-updates
+      synthRef.current = null;
+      setIsPlaying(false);
+      setError(playbackError.message || t('playbackError'));
+    }
+  };
 
   return (
-    <div className="EP_raphael-mayrhofer_educandu-plugin-solfege-tool_Display">
+    <div className="EP_RaphaelMayrhofer_SolfegeTool_Display">
       <div className={`u-horizontally-centered u-width-${content.width}`}>
-        <Markdown renderAnchors>
-          {content.text}
-        </Markdown>
-        <Form layout="vertical">
-          <Form.Item label={t('label')}>
-            <Input
-              value={input.data?.value || ''}
-              maxLength={100}
-              disabled={!canModifyInput}
-              readOnly={!canModifyInput}
-              onChange={handleCurrentValueChange}
-              />
-          </Form.Item>
-        </Form>
-        {!!serverTime && (
-          <div className="EP_raphael-mayrhofer_educandu-plugin-solfege-tool_Display-time">
-            {t('currentServerTime')}: {formatDate(serverTime)}
-          </div>
-        )}
+        <div className="EP_RaphaelMayrhofer_SolfegeTool_Display-header">
+          <h3>{t('name')}</h3>
+          <span>v0.1.0</span>
+        </div>
+        <p className="EP_RaphaelMayrhofer_SolfegeTool_Display-summary">
+          {t(`displayModes.${content.displayMode}`)} · {content.rootNote} {t(content.keyQuality)} · {content.meterNumerator}/{content.meterDenominator}
+        </p>
+        <Button onClick={handlePlayback}>{isPlaying ? t('stop') : t('play')}</Button>
+        {!!error && <p className="EP_RaphaelMayrhofer_SolfegeTool_Display-error" role="alert">{error}</p>}
+        <div ref={notationRef} className="EP_RaphaelMayrhofer_SolfegeTool_Display-notation" />
       </div>
     </div>
   );
 }
 
-ServerTimeDisplay.propTypes = {
+SolfegeToolDisplay.propTypes = {
   ...sectionDisplayProps
 };

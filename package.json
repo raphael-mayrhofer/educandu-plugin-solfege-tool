@@ -1,7 +1,7 @@
 {
   "name": "@educandu/educandu-plugin-solfege-tool",
-  "version": "0.0.0",
-  "description": "An solfege-tool plugin for educandu",
+  "version": "0.1.0",
+  "description": "An interactive solfege tool for Open Music Academy and Educandu",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
@@ -14,7 +14,7 @@
     "educandu"
   ],
   "license": "MIT",
-  "author": "Educandu Team <team@educandu.dev>",
+  "author": "Raphael Mayrhofer",
   "homepage": "https://github.com/raphael-mayrhofer/educandu-plugin-solfege-tool",
   "repository": {
     "type": "git",

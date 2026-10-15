@@ -1,56 +1,28 @@
-import ExampleInfo from './solfege-tool-info.js';
-import { beforeEach, describe, expect, it } from 'vitest';
-import GithubFlavoredMarkdown from '@educandu/educandu/common/github-flavored-markdown.js';
+import { describe, expect, it } from 'vitest';
+import SolfegeToolInfo from './solfege-tool-info.js';
 
-describe('example-info', () => {
-  let sut;
+describe('SolfegeToolInfo', () => {
+  const sut = new SolfegeToolInfo();
 
-  beforeEach(() => {
-    sut = new ExampleInfo(new GithubFlavoredMarkdown());
+  it('provides valid default content', () => {
+    const content = sut.getDefaultContent();
+
+    expect(() => sut.validateContent(content)).not.toThrow();
+    expect(content.displayMode).toBe('hands');
+    expect(content.meterDenominator).toBe(4);
   });
 
-  describe('redactContent', () => {
-    it('redacts room-media resources from different rooms', () => {
-      const result = sut.redactContent({
-        text: '![Some image](cdn://room-media/63cHjt3BAhGnNxzJGrTsN1/some-image.png)'
-      }, 'rebhjf4MLq7yjeoCnYfn7E');
-      expect(result).toStrictEqual({
-        text: '![Some image]()'
-      });
-    });
+  it('rejects unsupported display modes', () => {
+    const content = { ...sut.getDefaultContent(), displayMode: 'unknown' };
 
-    it('leaves room-media resources from the same room intact', () => {
-      const result = sut.redactContent({
-        text: '![Some image](cdn://room-media/63cHjt3BAhGnNxzJGrTsN1/some-image.png)'
-      }, '63cHjt3BAhGnNxzJGrTsN1');
-      expect(result).toStrictEqual({
-        text: '![Some image](cdn://room-media/63cHjt3BAhGnNxzJGrTsN1/some-image.png)'
-      });
-    });
-
-    it('leaves non room-media resources intact', () => {
-      const result = sut.redactContent({
-        text: '![Some image](cdn://media-library/JgTaqob5vqosBiHsZZoh1/some-image.png)'
-      }, 'rebhjf4MLq7yjeoCnYfn7E');
-      expect(result).toStrictEqual({
-        text: '![Some image](cdn://media-library/JgTaqob5vqosBiHsZZoh1/some-image.png)'
-      });
-    });
+    expect(() => sut.validateContent(content)).toThrow();
   });
 
-  describe('getCdnResources', () => {
-    it('returns media-library and room-media CDN resources from the text', () => {
-      const result = sut.getCdnResources({
-        text: [
-          '![Some image](cdn://media-library/JgTaqob5vqosBiHsZZoh1/some-image.png)',
-          '![Some image](cdn://room-media/63cHjt3BAhGnNxzJGrTsN1/some-image.png)',
-          '![Some image](https://external-domain.org/some-image.png)'
-        ].join('\n')
-      });
-      expect(result).toStrictEqual([
-        'cdn://media-library/JgTaqob5vqosBiHsZZoh1/some-image.png',
-        'cdn://room-media/63cHjt3BAhGnNxzJGrTsN1/some-image.png'
-      ]);
-    });
+  it('clones content independently', () => {
+    const content = sut.getDefaultContent();
+    const clone = sut.cloneContent(content);
+
+    clone.melody = 'C';
+    expect(content.melody).not.toBe(clone.melody);
   });
 });

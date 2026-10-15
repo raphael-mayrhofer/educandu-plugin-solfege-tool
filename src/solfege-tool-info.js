@@ -1,28 +1,20 @@
 import joi from 'joi';
 import React from 'react';
-import { ClockCircleOutlined } from '@ant-design/icons';
+import { SoundOutlined } from '@ant-design/icons';
 import cloneDeep from '@educandu/educandu/utils/clone-deep.js';
 import { PLUGIN_GROUP } from '@educandu/educandu/domain/constants.js';
-import { couldAccessUrlFromRoom } from '@educandu/educandu/utils/source-utils.js';
-import GithubFlavoredMarkdown from '@educandu/educandu/common/github-flavored-markdown.js';
 
 class SolfegeToolInfo {
-  static dependencies = [GithubFlavoredMarkdown];
-
   static typeName = 'raphael-mayrhofer/educandu-plugin-solfege-tool';
 
   allowsInput = true;
-
-  constructor(gfm) {
-    this.gfm = gfm;
-  }
 
   getDisplayName(t) {
     return t('raphael-mayrhofer/educandu-plugin-solfege-tool:name');
   }
 
   getIcon() {
-    return <ClockCircleOutlined />;
+    return <SoundOutlined />;
   }
 
   getGroups() {
@@ -39,15 +31,27 @@ class SolfegeToolInfo {
 
   getDefaultContent() {
     return {
-      text: '',
-      width: 100
+      melody: 'C D E F G2 G2 A A A A G4 A A A A G4\nF F F F E2 E2 D D D D C4',
+      width: 100,
+      meterNumerator: 4,
+      meterDenominator: 4,
+      rootNote: 'C',
+      keyQuality: 'major',
+      displayMode: 'hands',
+      tempo: 100
     };
   }
 
   validateContent(content) {
     const schema = joi.object({
-      text: joi.string().allow('').required(),
-      width: joi.number().min(0).max(100).required()
+      melody: joi.string().allow('').required(),
+      width: joi.number().min(10).max(100).required(),
+      meterNumerator: joi.number().integer().min(1).max(32).required(),
+      meterDenominator: joi.number().valid(1, 2, 4, 8, 16).required(),
+      rootNote: joi.string().required(),
+      keyQuality: joi.string().valid('major', 'minor').required(),
+      displayMode: joi.string().valid('hands', 'labels', 'numbers', 'boomwhackers', 'tone-names', 'tone-names-plain').required(),
+      tempo: joi.number().integer().min(40).max(200).required()
     });
 
     joi.attempt(content, schema, { abortEarly: false, convert: false, noDefaults: true });
@@ -57,20 +61,6 @@ class SolfegeToolInfo {
     return cloneDeep(content);
   }
 
-  redactContent(content, targetRoomId) {
-    const redactedContent = cloneDeep(content);
-
-    redactedContent.text = this.gfm.redactCdnResources(
-      redactedContent.text,
-      url => couldAccessUrlFromRoom(url, targetRoomId) ? url : ''
-    );
-
-    return redactedContent;
-  }
-
-  getCdnResources(content) {
-    return this.gfm.extractCdnResources(content.text);
-  }
 }
 
 export default SolfegeToolInfo;

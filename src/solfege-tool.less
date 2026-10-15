@@ -1,8 +1,61 @@
-.EP_raphael-mayrhofer_educandu-plugin-solfege-tool_Display {}
+.EP_RaphaelMayrhofer_SolfegeTool_Display {
+  padding: 20px 0;
 
-.EP_raphael-mayrhofer_educandu-plugin-solfege-tool_Display-time {
-  font-style: italic;
-  margin-top: @edu-page-content-padding;
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h3 {
+      margin: 0;
+    }
+
+    span {
+      color: #8c8c8c;
+      font-size: 12px;
+    }
+  }
+
+  &-summary {
+    margin: 6px 0 14px;
+    color: #8c8c8c;
+  }
+
+  &-notation {
+    width: 100%;
+    margin-top: 12px;
+    overflow: visible;
+    background: #fff;
+  }
+
+  &-system {
+    width: 100%;
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+  }
+
+  &-error {
+    margin: 12px 0;
+    color: #cf1322;
+  }
 }
+.EP_RaphaelMayrhofer_SolfegeTool_Editor {
+  &-meterSeparator {
+    display: inline-block;
+    margin: 0 8px;
+  }
 
-.EP_raphael-mayrhofer_educandu-plugin-solfege-tool_Editor {}
+  &-quality {
+    width: 110px;
+    margin-left: 8px;
+  }
+
+  .ant-select {
+    min-width: 90px;
+  }
+}

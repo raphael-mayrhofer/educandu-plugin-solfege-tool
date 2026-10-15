@@ -1,10 +1,62 @@
 raphael-mayrhofer/educandu-plugin-solfege-tool:
   name:
-    en: OMA Solfege Tool
-    de: OMA Solfege Tool
-  label:
-    en: Example label
-    de: Beispiel-Label
-  currentServerTime:
-    en: Current server time
-    de: Aktuelle Serverzeit
+    en: Solfege Tool
+    de: Solfege Tool
+  melody:
+    en: Melody
+    de: Melodie
+  meter:
+    en: Time signature
+    de: Taktart
+  meterNumerator:
+    en: Numerator
+    de: Zähler
+  meterDenominator:
+    en: Denominator
+    de: Nenner
+  key:
+    en: Key
+    de: Tonart
+  major:
+    en: major
+    de: Dur
+  minor:
+    en: minor
+    de: Moll
+  displayMode:
+    en: Display
+    de: Darstellung
+  displayModes:
+    hands:
+      en: Hand signs
+      de: Handzeichen
+    labels:
+      en: Solfege syllables
+      de: Solmisationssilben
+    numbers:
+      en: Scale degrees
+      de: Stufenzahlen
+    boomwhackers:
+      en: Boomwhacker colors
+      de: Boomwhacker-Farben
+    tone-names:
+      en: Note names with octave
+      de: Tonnamen mit Oktavnummer
+    tone-names-plain:
+      en: Note names
+      de: Tonnamen ohne Oktavnummer
+  tempo:
+    en: Tempo
+    de: Tempo
+  play:
+    en: Play melody
+    de: Melodie abspielen
+  stop:
+    en: Stop playback
+    de: Wiedergabe stoppen
+  renderError:
+    en: The notation could not be rendered.
+    de: Die Notation konnte nicht dargestellt werden.
+  playbackError:
+    en: The melody could not be played.
+    de: Die Melodie konnte nicht abgespielt werden.
