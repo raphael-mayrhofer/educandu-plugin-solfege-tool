@@ -9,7 +9,7 @@ import GithubFlavoredMarkdown from '@educandu/educandu/common/github-flavored-ma
 class SolfegeToolInfo {
   static dependencies = [GithubFlavoredMarkdown];
 
-  static typeName = 'raphael-mayrhofer/educandu-plugin-solfegeTool';
+  static typeName = 'raphael-mayrhofer/educandu-plugin-solfege-tool';
 
   allowsInput = true;
 
@@ -18,7 +18,7 @@ class SolfegeToolInfo {
   }
 
   getDisplayName(t) {
-    return t('raphaelmayrhofer/educandu-plugin-solfegeTool:name');
+    return t('raphaelmayrhofer/educandu-plugin-solfege-tool:name');
   }
 
   getIcon() {
@@ -30,11 +30,11 @@ class SolfegeToolInfo {
   }
 
   async resolveDisplayComponent() {
-    return (await import('./solfegeTool-display.js')).default;
+    return (await import('./solfege-tool-display.js')).default;
   }
 
   async resolveEditorComponent() {
-    return (await import('./solfegeTool-editor.js')).default;
+    return (await import('./solfege-tool-editor.js')).default;
   }
 
   getDefaultContent() {

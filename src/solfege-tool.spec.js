@@ -1,4 +1,4 @@
-import ExampleInfo from './solfegeTool-info.js';
+import ExampleInfo from './solfege-tool-info.js';
 import { beforeEach, describe, expect, it } from 'vitest';
 import GithubFlavoredMarkdown from '@educandu/educandu/common/github-flavored-markdown.js';
 

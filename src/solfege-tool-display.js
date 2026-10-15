@@ -17,7 +17,7 @@ export default function ServerTimeDisplay({ content, input, canModifyInput, onIn
   const { formatDate } = useDateFormat();
   const httpClient = useService(HttpClient);
   const [serverTime, setServerTime] = useState(null);
-  const { t } = useTranslation('raphael-mayrhofer/educandu-plugin-solfegeTool');
+  const { t } = useTranslation('raphael-mayrhofer/educandu-plugin-solfege-tool');
 
   const handleCurrentValueChange = event => {
     onInputChanged({ value: event.target.value });
@@ -29,7 +29,7 @@ export default function ServerTimeDisplay({ content, input, canModifyInput, onIn
     const getUpdate = async () => {
       try {
         const response = await httpClient.get(
-          '/api/v1/plugin/raphaelMayrhofer/educandu-plugin-solfegeTool/time',
+          '/api/v1/plugin/raphaelMayrhofer/educandu-plugin-solfege-tool/time',
           { responseType: 'json' }
         );
 
@@ -50,7 +50,7 @@ export default function ServerTimeDisplay({ content, input, canModifyInput, onIn
   }, [httpClient, t]);
 
   return (
-    <div className="EP_raphael-mayrhofer_educandu-plugin-solfegeTool_Display">
+    <div className="EP_raphael-mayrhofer_educandu-plugin-solfege-tool_Display">
       <div className={`u-horizontally-centered u-width-${content.width}`}>
         <Markdown renderAnchors>
           {content.text}
@@ -67,7 +67,7 @@ export default function ServerTimeDisplay({ content, input, canModifyInput, onIn
           </Form.Item>
         </Form>
         {!!serverTime && (
-          <div className="EP_raphael-mayrhofer_educandu-plugin-solfegeTool_Display-time">
+          <div className="EP_raphael-mayrhofer_educandu-plugin-solfege-tool_Display-time">
             {t('currentServerTime')}: {formatDate(serverTime)}
           </div>
         )}

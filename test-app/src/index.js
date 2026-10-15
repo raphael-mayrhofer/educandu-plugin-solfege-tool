@@ -4,7 +4,7 @@ import path from 'node:path';
 import parseBool from 'parseboolean';
 import educandu from '@educandu/educandu';
 import customResolvers from './custom-resolvers.js';
-import solfegeToolController from "../../src/solfegeTool-controller.js";
+import solfegeToolController from "../../src/solfege-tool-controller.js";
 
 const thisDir = path.dirname(url.fileURLToPath(import.meta.url));
 

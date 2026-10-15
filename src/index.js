@@ -1,1 +1,1 @@
-export { default } from './solfegeTool-info.js';
+export { default } from './solfege-tool-info.js';
