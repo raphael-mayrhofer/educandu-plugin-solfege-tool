@@ -18,7 +18,7 @@ class SolfegeToolInfo {
   }
 
   getDisplayName(t) {
-    return t('raphaelmayrhofer/educandu-plugin-solfege-tool:name');
+    return t('raphael-mayrhofer/educandu-plugin-solfege-tool:name');
   }
 
   getIcon() {
@@ -73,4 +73,4 @@ class SolfegeToolInfo {
   }
 }
 
-export default ServerTimeInfo;
+export default SolfegeToolInfo;

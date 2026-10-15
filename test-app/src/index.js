@@ -4,7 +4,7 @@ import path from 'node:path';
 import parseBool from 'parseboolean';
 import educandu from '@educandu/educandu';
 import customResolvers from './custom-resolvers.js';
-import solfegeToolController from "../../src/solfege-tool-controller.js";
+import solfegeToolController from '../../src/solfege-tool-controller.js';
 
 const thisDir = path.dirname(url.fileURLToPath(import.meta.url));
 
@@ -50,7 +50,7 @@ const config = {
   emailSenderAddress: process.env.TEST_APP_EMAIL_SENDER_ADDRESS,
   adminEmailAddress: process.env.TEST_APP_ADMIN_EMAIL_ADDRESS,
   initialUser: JSON.parse(process.env.TEST_APP_INITIAL_USER),
-  plugins: ['markdown', 'image', 'raphael-mayrhofer/educandu-plugin-solfegeTool'],
+  plugins: ['markdown', 'image', 'raphael-mayrhofer/educandu-plugin-solfege-tool'],
   exposeErrorDetails: true
 };
 
