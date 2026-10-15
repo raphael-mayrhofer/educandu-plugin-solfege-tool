@@ -27,7 +27,7 @@
     "@educandu/educandu": "^4.0.0",
     "@educandu/node-jsx-loader": "^4.0.0",
     "@educandu/rooms-auth-lambda": "^9.0.0",
-    "@vitest/coverage-v8": "^1.0.2",
+    "@vitest/coverage-v8": "^3.2.6",
     "antd": "5.21.2",
     "del": "^7.1.0",
     "eslint": "^8.55.0",
@@ -38,7 +38,7 @@
     "gulp": "^4.0.2",
     "mkdirp": "^3.0.1",
     "parseboolean": "^1.0.0",
-    "vitest": "^1.0.2"
+    "vitest": "^3.2.6"
   },
   "peerDependencies": {
     "@ant-design/icons": ">=5.5.1",
