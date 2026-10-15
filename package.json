@@ -1,7 +1,7 @@
 {
-  "name": "@educandu/educandu-plugin-example",
+  "name": "@educandu/educandu-plugin-solfegeTool",
   "version": "0.0.0",
-  "description": "An example plugin for educandu",
+  "description": "An solfegeTool plugin for educandu",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
@@ -15,10 +15,10 @@
   ],
   "license": "MIT",
   "author": "Educandu Team <team@educandu.dev>",
-  "homepage": "https://github.com/educandu/educandu-plugin-example",
+  "homepage": "https://github.com/raphael-mayrhofer/educandu-plugin-solfegeTool",
   "repository": {
     "type": "git",
-    "url": "https://github.com/educandu/educandu-plugin-example"
+    "url": "https://github.com/raphael-mayrhofer/educandu-plugin-solfegeTool"
   },
   "dependencies": {},
   "devDependencies": {

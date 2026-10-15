@@ -1,7 +1,7 @@
-educandu/educandu-plugin-example:
+raphael-mayrhofer/educandu-plugin-solfegeTool:
   name:
-    en: Example plugin
-    de: Beispiel-Plugin
+    en: OMA Solfege Tool
+    de: OMA Solfege Tool
   label:
     en: Example label
     de: Beispiel-Label

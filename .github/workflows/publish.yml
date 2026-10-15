@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: "20.17.0"
           cache: "yarn"
+          registry-url: "https://registry.npmjs.org"
       - name: Update npm
         run: npm install -g npm@11.6.2
       - name: Install node modules
@@ -38,11 +39,7 @@ jobs:
         run: ./node_modules/.bin/gulp build
       - name: Publish to npm
         run: npm publish
-      - name: Create Github release and tag JIRA issues
-        run: |
-          ./node_modules/.bin/gulp release \
-            --github-token ${{secrets.GITHUB_TOKEN}} \
-            --jira-base-url ${{env.JIRA_BASE_URL}} \
-            --jira-project-keys ${{env.JIRA_PROJECT_KEYS}} \
-            --jira-user ${{secrets.JIRA_USER}} \
-            --jira-api-key ${{secrets.JIRA_API_KEY}}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Create Github release
+        run: ./node_modules/.bin/gulp release --github-token ${{secrets.GITHUB_TOKEN}}

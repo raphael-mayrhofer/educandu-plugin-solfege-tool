@@ -8,7 +8,7 @@ import { sectionEditorProps } from '@educandu/educandu/ui/default-prop-types.js'
 import ObjectWidthSlider from '@educandu/educandu/components/object-width-slider.js';
 
 export default function ServerTimeEditor({ content, onContentChanged }) {
-  const { t } = useTranslation('educandu/educandu-plugin-example');
+  const { t } = useTranslation('raphael-mayrhofer/educandu-plugin-solfegeTool');
   const { text, width } = content;
 
   const updateContent = newContentValues => {
@@ -24,7 +24,7 @@ export default function ServerTimeEditor({ content, onContentChanged }) {
   };
 
   return (
-    <div className="EP_Educandu_Example_Editor">
+    <div className="EP_raphael-mayrhofer_educandu-plugin-solfegeTool_Editor">
       <Form labelAlign="left">
         <Form.Item label={t('common:text')} {...FORM_ITEM_LAYOUT}>
           <MarkdownInput value={text} onChange={handleTextChanged} renderAnchors />

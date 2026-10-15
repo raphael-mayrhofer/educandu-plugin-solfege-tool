@@ -6,10 +6,10 @@ import { PLUGIN_GROUP } from '@educandu/educandu/domain/constants.js';
 import { couldAccessUrlFromRoom } from '@educandu/educandu/utils/source-utils.js';
 import GithubFlavoredMarkdown from '@educandu/educandu/common/github-flavored-markdown.js';
 
-class ServerTimeInfo {
+class SolfegeToolInfo {
   static dependencies = [GithubFlavoredMarkdown];
 
-  static typeName = 'educandu/educandu-plugin-example';
+  static typeName = 'raphael-mayrhofer/educandu-plugin-solfegeTool';
 
   allowsInput = true;
 
@@ -18,7 +18,7 @@ class ServerTimeInfo {
   }
 
   getDisplayName(t) {
-    return t('educandu/educandu-plugin-example:name');
+    return t('raphaelmayrhofer/educandu-plugin-solfegeTool:name');
   }
 
   getIcon() {
@@ -30,11 +30,11 @@ class ServerTimeInfo {
   }
 
   async resolveDisplayComponent() {
-    return (await import('./example-display.js')).default;
+    return (await import('./solfegeTool-display.js')).default;
   }
 
   async resolveEditorComponent() {
-    return (await import('./example-editor.js')).default;
+    return (await import('./solfegeTool-editor.js')).default;
   }
 
   getDefaultContent() {

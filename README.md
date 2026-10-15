@@ -43,7 +43,7 @@ Add the plugin name, the translations and any additional controllers to your ser
 ~~~ js
 import educandu from '@educandu/educandu';
 import { createRequire } from 'node:module';
-import ExampleController from '@educandu/educandu-plugin-example/example-controller.js';
+import ExampleController from '@educandu/educandu-plugin-example/solfegeTool-controller.js';
 
 const require = createRequire(import.meta.url);
 const examplePluginTranslationsPath = require.resolve('@educandu/educandu-plugin-example/translations.json');
